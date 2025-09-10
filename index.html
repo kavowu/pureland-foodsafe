@@ -256,23 +256,23 @@
                 <!-- <input type="hidden" name="_next" value="https://你的網域/thankyou.html"> -->
                 <div class="form-group">
                     <label for="name">姓名 / 法號</label>
-                    <input type="text" id="name" name="name" required>
+                    <input type="text" id="name" name="name" autocomplete="name" required>
                 </div>
                 <div class="form-group">
                     <label for="organization">道場 / 機構名稱</label>
-                    <input type="text" id="organization" name="organization">
+                    <input type="text" id="organization" name="organization" autocomplete="organization">
                 </div>
                 <div class="form-group">
                     <label for="phone">聯絡電話</label>
-                    <input type="tel" id="phone" name="phone" required>
+                    <input type="tel" id="phone" name="phone" autocomplete="tel" required>
                 </div>
                 <div class="form-group">
                     <label for="email">電子信箱</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="email" autocomplete="email" required>
                 </div>
                 <div class="form-group">
                     <label for="message">需求說明</label>
-                    <textarea id="message" name="message" rows="4" placeholder="請簡述您的場域狀況與需求..."></textarea>
+                    <textarea id="message" name="message" rows="4" placeholder="請簡述您的場域狀況與需求..." autocomplete="off"></textarea>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="submit-button">送出諮詢</button>
