@@ -78,25 +78,18 @@ document.addEventListener('DOMContentLoaded', function() {
     /* 兩難困境：讓右側卡片群的中央，對齊左側圖片的中央 */
     function alignRightCardsToLeftPhoto() {
         const grid = document.querySelector('#dilemma .content-grid');
-        const leftPhoto = document.querySelector('#dilemma .content-photo');
-        const leftImg = document.querySelector('#dilemma .content-photo img');
-        const rightCol = document.querySelector('#dilemma .content-images');
-        if (!grid || !leftPhoto || !rightCol) return;
-        // 僅在寬度足以並排時調整
-        const isDesktop = window.innerWidth >= 992;
-        if (!isDesktop) {
-            document.documentElement.style.setProperty('--dilemma-right-offset', '0px');
-            return;
+        function updateBackToTopVisibility() {
+            if (window.pageYOffset > 300) {
+                backToTopButton.style.opacity = '1';
+                backToTopButton.style.visibility = 'visible';
+            } else {
+                backToTopButton.style.opacity = '0';
+                backToTopButton.style.visibility = 'hidden';
+            }
         }
         const gridRect = grid.getBoundingClientRect();
         const rightRect = rightCol.getBoundingClientRect();
-        const photoRect = (leftImg || leftPhoto).getBoundingClientRect();
-        const gridTop = gridRect.top + window.scrollY;
-        const photoCenter = photoRect.top + window.scrollY + (photoRect.height / 2);
-        const rightHalf = rightRect.height / 2;
-        // 讓右側中心 = 左圖中心
-        const desiredOffset = Math.max(0, photoCenter - rightHalf - gridTop);
-        document.documentElement.style.setProperty('--dilemma-right-offset', `${desiredOffset}px`);
+        // 移除全頁面遮罩式淡入，避免等到所有資源載入才顯示
     }
     // 初始與事件綁定
     alignRightCardsToLeftPhoto();
@@ -111,10 +104,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const thankYouPopup = document.getElementById('thankYouPopup');
     const closeThankYou = document.getElementById('closeThankYou');
     function openThankYou() {
-        if (!thankYouPopup) return;
-        thankYouPopup.classList.add('active');
-        thankYouPopup.setAttribute('aria-hidden','false');
-        document.body.style.overflow = 'hidden';
+        images.forEach(img => {
+            if (!img.classList.contains('hero-image')) {
+                img.style.opacity = '0';
+            }
+            imageObserver.observe(img);
+        });
         const btn = thankYouPopup.querySelector('button');
         if (btn) btn.focus();
     }
@@ -254,7 +249,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    window.addEventListener('scroll', updateScrollProgress);
+    // 節流滾動事件：避免每次 scroll 都大量運算
+    let spTicking = false;
+    window.addEventListener('scroll', function() {
+        if (!spTicking) {
+            spTicking = true;
+            requestAnimationFrame(() => {
+                updateScrollProgress();
+                spTicking = false;
+            });
+        }
+    }, { passive: true });
     
     // 返回頂部按鈕
     const backToTopButton = document.createElement('button');
